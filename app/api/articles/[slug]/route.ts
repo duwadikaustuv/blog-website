@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { checkIsAdmin } from "@/lib/authHelpers";
+
+// Force dynamic to prevent caching issues
+export const dynamic = "force-dynamic";
 
 // GET - Get single article by slug
 export async function GET(
@@ -50,7 +52,8 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const isAdmin = await checkIsAdmin(session.user.email);
+    // Check role from session instead of extra DB call
+    const isAdmin = session?.user?.role === "admin" || session?.user?.role === "superadmin";
     if (!isAdmin) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -125,19 +128,13 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const isAdmin = await checkIsAdmin(session.user.email);
+    // Check role from session instead of extra DB call
+    const isAdmin = session?.user?.role === "admin" || session?.user?.role === "superadmin";
     if (!isAdmin) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const article = await prisma.article.findUnique({
-      where: { slug },
-    });
-
-    if (!article) {
-      return NextResponse.json({ error: "Article not found" }, { status: 404 });
-    }
-
+    // Delete directly - if article doesn't exist, Prisma will throw
     await prisma.article.delete({
       where: { slug },
     });
@@ -152,4 +149,3 @@ export async function DELETE(
   }
 }
 
-// checkIsAdmin is imported from @/lib/authHelpers

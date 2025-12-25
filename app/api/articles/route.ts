@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { checkIsAdmin } from "@/lib/authHelpers";
 import { Article } from "@/types";
+
+// Force dynamic to prevent caching issues
+export const dynamic = "force-dynamic";
 
 // GET - List all articles (public: published only, admin: all)
 export async function GET(request: NextRequest) {
@@ -11,8 +13,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const includeUnpublished = searchParams.get("all") === "true";
     
-    // Only admins can see unpublished articles
-    const isAdmin = session?.user?.email && await checkIsAdmin(session.user.email);
+    // Only admins can see unpublished articles - check role from session
+    const isAdmin = session?.user?.role === "admin" || session?.user?.role === "superadmin";
     
     const articles = await prisma.article.findMany({
       where: includeUnpublished && isAdmin ? {} : { published: true },
@@ -49,7 +51,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const isAdmin = await checkIsAdmin(session.user.email);
+    // Check role from session instead of extra DB call
+    const isAdmin = session?.user?.role === "admin" || session?.user?.role === "superadmin";
     if (!isAdmin) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -64,10 +67,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if slug already exists
-    const existingArticle = await prisma.article.findUnique({
-      where: { slug },
-    });
+    // Get user and check slug in parallel to reduce latency
+    const [existingArticle, adminUser] = await Promise.all([
+      prisma.article.findUnique({ where: { slug } }),
+      prisma.user.findUnique({ where: { email: session.user.email } }),
+    ]);
 
     if (existingArticle) {
       return NextResponse.json(
@@ -75,11 +79,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    // Get admin user
-    const adminUser = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
 
     if (!adminUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -116,5 +115,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-// checkIsAdmin is imported from @/lib/authHelpers
