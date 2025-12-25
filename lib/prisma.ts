@@ -6,7 +6,7 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-function createPrismaClient() {
+function createPrismaClient(): PrismaClient {
   const databaseUrl = process.env.DATABASE_URL || "";
   
   // Use Turso/LibSQL adapter for production (libsql:// URLs)
@@ -18,12 +18,8 @@ function createPrismaClient() {
 
     const adapter = new PrismaLibSQL(libsql);
 
-    // Pass a dummy datasource URL to bypass Prisma's URL validation
-    // The adapter will handle the actual connection
-    return new PrismaClient({
-      adapter,
-      datasourceUrl: "file:./placeholder.db",
-    });
+    // When using adapter, don't pass datasourceUrl - adapter handles connection
+    return new PrismaClient({ adapter });
   }
   
   // Use regular SQLite for local development (file:// URLs)

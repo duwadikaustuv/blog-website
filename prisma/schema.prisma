@@ -8,7 +8,9 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  // When using driver adapters, this URL is only used for schema validation/migrations
+  // The actual connection is handled by the adapter in lib/prisma.ts
+  url      = "file:./dev.db"
 }
 
 model User {
