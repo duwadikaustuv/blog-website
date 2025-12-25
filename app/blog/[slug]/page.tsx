@@ -124,8 +124,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             prose-blockquote:border-gray-300 dark:prose-blockquote:border-gray-700
             prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300
             prose-img:rounded-lg prose-img:w-full prose-img:h-auto prose-img:max-w-full"
-          style={{ hyphens: 'none', WebkitHyphens: 'none', MozHyphens: 'none', msHyphens: 'none' }}
-          dangerouslySetInnerHTML={{ __html: article.content }}
+          style={{ 
+            hyphens: 'none', 
+            WebkitHyphens: 'none', 
+            MozHyphens: 'none', 
+            msHyphens: 'none',
+            wordBreak: 'normal',
+            overflowWrap: 'break-word'
+          }}
+          dangerouslySetInnerHTML={{ 
+            __html: article.content
+              .replace(/\u00AD/g, "") // Remove soft hyphens
+              .replace(/&shy;/g, "")  // Remove soft hyphen entities
+              .replace(/<wbr\s*\/?>/gi, "") // Remove wbr tags
+              .replace(/&nbsp;/g, " ") // Remove non-breaking space entities
+              .replace(/\u00A0/g, " ") // Remove non-breaking space characters
+              .replace(/\u202F/g, " ") // Remove narrow non-breaking space
+          }}
         />
 
         {/* Footer */}

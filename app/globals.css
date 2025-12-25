@@ -47,10 +47,14 @@ img {
 
 /* Blog content styles */
 .prose {
-  max-width: 65ch;
+  max-width: none;
+  width: 100%;
   color: var(--foreground);
+  /* Prevent mid-word breaks while still allowing very long strings to wrap */
+  word-break: normal;
   overflow-wrap: break-word;
   word-wrap: break-word;
+  white-space: normal;
   -webkit-hyphens: none !important;
   -moz-hyphens: none !important;
   -ms-hyphens: none !important;
@@ -58,11 +62,14 @@ img {
 }
 
 .prose * {
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  white-space: normal !important;
   -webkit-hyphens: none !important;
   -moz-hyphens: none !important;
   -ms-hyphens: none !important;
   hyphens: none !important;
-  word-break: normal !important;
 }
 
 .prose h1,
