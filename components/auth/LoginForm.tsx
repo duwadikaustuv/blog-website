@@ -39,7 +39,7 @@ export default function LoginForm() {
 
 
   return (
-    <div className="w-full max-w-md p-8 rounded-lg bg-white dark:bg-gray-950">
+    <div className="w-full max-w-md p-8 rounded-lg bg-white dark:bg-black">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-black dark:text-white mb-2">
           Sign In
@@ -66,7 +66,8 @@ export default function LoginForm() {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              className="w-full border border-gray-300 dark:border-gray-700 px-4 py-3 text-sm bg-white dark:bg-black text-black dark:text-white focus:outline-none focus:border-black dark:focus:border-white"
+              className="w-full rounded-md border-2 border-gray-300 dark:border-gray-700 px-4 py-3 text-sm bg-white dark:bg-black text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-black dark:focus:border-white"
+              placeholder="you@example.com"
             />
           </div>
 
@@ -85,7 +86,8 @@ export default function LoginForm() {
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
-              className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-4 py-3 text-sm bg-white dark:bg-black text-black dark:text-white focus:outline-none focus:border-black dark:focus:border-white"
+              className="w-full rounded-md border-2 border-gray-300 dark:border-gray-700 px-4 py-3 text-sm bg-white dark:bg-black text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-black dark:focus:border-white"
+              placeholder="••••••••"
             />
           </div>
         </div>
