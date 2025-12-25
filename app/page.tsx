@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { BlogPost } from "@/types";
 
+// Force dynamic rendering - prevents build-time database access
+export const dynamic = "force-dynamic";
+
 interface ArticleFromDB {
   id: string;
   title: string;
@@ -20,31 +23,36 @@ interface ArticleFromDB {
 }
 
 async function getPublishedArticles(): Promise<BlogPost[]> {
-  const articles: ArticleFromDB[] = await prisma.article.findMany({
-    where: { published: true },
-    include: { author: { select: { name: true, image: true } } },
-    orderBy: { createdAt: "desc" },
-    take: 6,
-  });
-  
-  return articles.map((article: ArticleFromDB) => ({
-    id: article.id,
-    title: article.title,
-    slug: article.slug,
-    excerpt: article.excerpt,
-    coverImage: article.coverImage || "/images/default-cover.jpg",
-    author: {
-      name: article.author.name || "Anonymous",
-      avatar: article.author.image || "/images/default-avatar.jpg",
-    },
-    date: article.createdAt.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }),
-    readTime: article.readTime || "5 min read",
-    tags: article.tags ? JSON.parse(article.tags) : [],
-  }));
+  try {
+    const articles: ArticleFromDB[] = await prisma.article.findMany({
+      where: { published: true },
+      include: { author: { select: { name: true, image: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 6,
+    });
+    
+    return articles.map((article: ArticleFromDB) => ({
+      id: article.id,
+      title: article.title,
+      slug: article.slug,
+      excerpt: article.excerpt,
+      coverImage: article.coverImage || "/images/default-cover.jpg",
+      author: {
+        name: article.author.name || "Anonymous",
+        avatar: article.author.image || "/images/default-avatar.jpg",
+      },
+      date: article.createdAt.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      readTime: article.readTime || "5 min read",
+      tags: article.tags ? JSON.parse(article.tags) : [],
+    }));
+  } catch (error) {
+    console.error("Failed to fetch articles:", error);
+    return [];
+  }
 }
 
 export default async function Home() {
