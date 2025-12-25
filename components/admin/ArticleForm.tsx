@@ -94,7 +94,7 @@ export default function ArticleForm({ initialData, isEditing }: ArticleFormProps
 
       router.push("/admin/articles");
       router.refresh();
-    } catch (_err) {
+    } catch {
       setError("Something went wrong");
       setLoading(false);
     }
