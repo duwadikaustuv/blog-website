@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FiChevronDown, FiTrash2 } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 interface UserActionsProps {
   userId: string;
@@ -36,9 +37,10 @@ export default function UserActions({
           throw new Error(error.error || "Failed to update role");
         }
 
+        toast.success(`Role updated to ${newRole}`);
         window.location.reload();
       } catch (error) {
-        alert(error instanceof Error ? error.message : "Failed to update role");
+        toast.error(error instanceof Error ? error.message : "Failed to update role");
       } finally {
         setIsUpdating(false);
         setShowMenu(false);
@@ -63,9 +65,10 @@ export default function UserActions({
           throw new Error(error.error || "Failed to delete user");
         }
 
+        toast.success("User deleted");
         window.location.reload();
       } catch (error) {
-        alert(error instanceof Error ? error.message : "Failed to delete user");
+        toast.error(error instanceof Error ? error.message : "Failed to delete user");
       } finally {
         setIsUpdating(false);
       }

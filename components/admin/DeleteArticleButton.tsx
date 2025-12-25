@@ -2,6 +2,7 @@
 
 import { deleteArticle } from "@/lib/actions";
 import { useTransition } from "react";
+import { toast } from "react-toastify";
 
 export default function DeleteArticleButton({ slug }: { slug: string }) {
   const [isPending, startTransition] = useTransition();
@@ -13,7 +14,12 @@ export default function DeleteArticleButton({ slug }: { slug: string }) {
       onClick={() => {
         if (confirm("Are you sure you want to delete this article?")) {
           startTransition(async () => {
-            await deleteArticle(slug);
+            try {
+              await deleteArticle(slug);
+              toast.success("Article deleted!");
+            } catch {
+              toast.error("Failed to delete article");
+            }
           });
         }
       }}

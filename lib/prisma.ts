@@ -19,7 +19,8 @@ function createPrismaClient(): PrismaClient {
     const adapter = new PrismaLibSQL(libsql);
 
     // When using adapter, don't pass datasourceUrl - adapter handles connection
-    return new PrismaClient({ adapter });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new PrismaClient({ adapter } as any);
   }
   
   // Use regular SQLite for local development (file:// URLs)

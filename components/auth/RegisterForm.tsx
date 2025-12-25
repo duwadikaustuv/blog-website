@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -12,12 +13,10 @@ export default function RegisterForm() {
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
@@ -30,7 +29,7 @@ export default function RegisterForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Registration failed");
+        toast.error(data.error || "Registration failed");
         setLoading(false);
         return;
       }
@@ -43,13 +42,15 @@ export default function RegisterForm() {
       });
 
       if (result?.error) {
-        setError("Registration successful, but login failed");
+        toast.warning("Account created! Please sign in.");
+        router.push("/login");
       } else {
+        toast.success("Account created successfully!");
         router.push("/dashboard");
         router.refresh();
       }
     } catch {
-      setError("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -58,7 +59,7 @@ export default function RegisterForm() {
 
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md p-8 rounded-lg bg-white dark:bg-gray-950">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-black dark:text-white mb-2">
           Create Account
@@ -69,12 +70,6 @@ export default function RegisterForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="p-4 rounded-md border border-red-600 dark:border-red-400 bg-red-50 dark:bg-red-950 text-sm text-red-600 dark:text-red-400">
-            {error}
-          </div>
-        )}
-
         <div className="space-y-4">
           <div>
             <label

@@ -4,16 +4,15 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function LoginForm() {
   const router = useRouter();
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
@@ -24,13 +23,14 @@ export default function LoginForm() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        toast.error("Invalid email or password");
       } else {
+        toast.success("Welcome back!");
         router.push("/dashboard");
         router.refresh();
       }
     } catch {
-      setError("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -39,7 +39,7 @@ export default function LoginForm() {
 
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md p-8 rounded-lg bg-white dark:bg-gray-950">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-black dark:text-white mb-2">
           Sign In
@@ -50,12 +50,6 @@ export default function LoginForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="p-4 rounded-md border border-red-600 dark:border-red-400 bg-red-50 dark:bg-red-950 text-sm text-red-600 dark:text-red-400">
-            {error}
-          </div>
-        )}
-
         <div className="space-y-4">
           <div>
             <label

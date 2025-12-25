@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { checkIsAdmin } from "@/lib/authHelpers";
 import Link from "next/link";
+import AdminMobileNav from "@/components/admin/AdminMobileNav";
 
 export default async function AdminLayout({
   children,
@@ -21,9 +22,12 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-white dark:bg-black">
+      {/* Mobile Navigation */}
+      <AdminMobileNav />
+
       <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 min-h-[calc(100vh-73px)] border-r border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+        {/* Sidebar - Hidden on mobile, visible on lg and up */}
+        <aside className="hidden lg:block w-64 min-h-[calc(100vh-73px)] border-r border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
           <nav className="p-6">
             <h2 className="text-lg font-semibold text-black dark:text-white mb-6">
               Admin Panel
@@ -74,7 +78,7 @@ export default async function AdminLayout({
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8">{children}</main>
+        <main className="flex-1 p-4 lg:p-8">{children}</main>
       </div>
     </div>
   );

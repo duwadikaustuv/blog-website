@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "./RichTextEditor";
+import { toast } from "react-toastify";
 
 interface ArticleFormProps {
   initialData?: {
@@ -21,7 +22,6 @@ interface ArticleFormProps {
 export default function ArticleForm({ initialData, isEditing }: ArticleFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
@@ -52,7 +52,6 @@ export default function ArticleForm({ initialData, isEditing }: ArticleFormProps
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
@@ -87,27 +86,22 @@ export default function ArticleForm({ initialData, isEditing }: ArticleFormProps
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Failed to save article");
+        toast.error(data.error || "Failed to save article");
         setLoading(false);
         return;
       }
 
+      toast.success(isEditing ? "Article updated!" : "Article created!");
       router.push("/admin/articles");
       router.refresh();
     } catch {
-      setError("Something went wrong");
+      toast.error("Something went wrong");
       setLoading(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
-        <div className="p-4 rounded-md border border-red-600 dark:border-red-400 bg-red-50 dark:bg-red-950 text-sm text-red-600 dark:text-red-400">
-          {error}
-        </div>
-      )}
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">

@@ -24,7 +24,7 @@ export default async function EditArticlePage({ params }: EditArticlePageProps) 
     content: article.content,
     coverImage: article.coverImage || undefined,
     published: article.published,
-    readTime: article.readTime,
+    readTime: article.readTime || "5 min read",
     tags: JSON.parse(article.tags || "[]"),
   };
 
