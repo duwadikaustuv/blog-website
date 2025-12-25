@@ -27,6 +27,8 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.production
+.env.development
 
 # vercel
 .vercel
@@ -38,3 +40,8 @@ next-env.d.ts
 #others
 deploy-prep.ps1
 DEPLOYMENT-GUIDE.md
+
+# database files
+auth
+auth-wal
+prisma/auth
