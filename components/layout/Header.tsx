@@ -7,7 +7,7 @@ import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const { data: session } = useSession();
-  const isAdmin = session?.user?.role === "admin";
+  const isAdmin = session?.user?.role === "admin" || session?.user?.role === "superadmin";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (

@@ -2,6 +2,22 @@ import { prisma } from "../lib/prisma";
 import bcrypt from "bcryptjs";
 
 async function main() {
+  // Create superadmin user
+  const superadminPassword = await bcrypt.hash("superadmin123", 12);
+  
+  const superadmin = await prisma.user.upsert({
+    where: { email: "superadmin@example.com" },
+    update: {},
+    create: {
+      email: "superadmin@example.com",
+      name: "Super Admin",
+      password: superadminPassword,
+      role: "superadmin",
+    },
+  });
+
+  console.log("Created superadmin user:", superadmin.email);
+
   // Create admin user
   const adminPassword = await bcrypt.hash("admin123", 12);
   

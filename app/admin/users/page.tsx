@@ -1,4 +1,7 @@
 import prisma from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { checkIsSuperAdmin } from "@/lib/authHelpers";
+import UserActions from "@/components/admin/UserActions";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +18,11 @@ interface UserWithCount {
 }
 
 export default async function AdminUsersPage() {
+  const session = await auth();
+  const isSuperAdmin = session?.user?.email
+    ? await checkIsSuperAdmin(session.user.email)
+    : false;
+
   const users: UserWithCount[] = await prisma.user.findMany({
     select: {
       id: true,
@@ -39,6 +47,14 @@ export default async function AdminUsersPage() {
         <p className="text-gray-600 dark:text-gray-400 mt-1">
           All registered users ({users.length} total)
         </p>
+        {isSuperAdmin && (
+          <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
+            <p className="text-sm text-purple-800 dark:text-purple-300">
+              <strong>SuperAdmin Access:</strong> You can change user roles and
+              delete users. Click on a role badge to change it.
+            </p>
+          </div>
+        )}
       </div>
 
       {users.length === 0 ? (
@@ -67,6 +83,11 @@ export default async function AdminUsersPage() {
                 <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Joined
                 </th>
+                {isSuperAdmin && (
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    Actions
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
@@ -99,15 +120,13 @@ export default async function AdminUsersPage() {
                     {user.email}
                   </td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex px-2 py-1 text-xs font-medium rounded ${
-                        user.role === "admin"
-                          ? "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
-                          : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                      }`}
-                    >
-                      {user.role}
-                    </span>
+                    <UserActions
+                      userId={user.id}
+                      currentRole={user.role}
+                      userEmail={user.email}
+                      isSuperAdmin={isSuperAdmin}
+                      isCurrentUser={session?.user?.email === user.email}
+                    />
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                     {user._count.articles}

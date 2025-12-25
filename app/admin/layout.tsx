@@ -1,15 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import prisma from "@/lib/prisma";
+import { checkIsAdmin } from "@/lib/authHelpers";
 import Link from "next/link";
-
-async function checkIsAdmin(email: string): Promise<boolean> {
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { role: true },
-  });
-  return user?.role === "admin";
-}
 
 export default async function AdminLayout({
   children,
