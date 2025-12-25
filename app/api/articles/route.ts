@@ -6,6 +6,9 @@ import { Article } from "@/types";
 // Force dynamic to prevent caching issues
 export const dynamic = "force-dynamic";
 
+// Allow up to 60 seconds for large uploads
+export const maxDuration = 60;
+
 // GET - List all articles (public: published only, admin: all)
 export async function GET(request: NextRequest) {
   try {

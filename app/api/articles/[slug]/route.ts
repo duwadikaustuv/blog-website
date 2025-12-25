@@ -5,6 +5,9 @@ import { auth } from "@/lib/auth";
 // Force dynamic to prevent caching issues
 export const dynamic = "force-dynamic";
 
+// Allow up to 60 seconds for large uploads
+export const maxDuration = 60;
+
 // GET - Get single article by slug
 export async function GET(
   request: NextRequest,
