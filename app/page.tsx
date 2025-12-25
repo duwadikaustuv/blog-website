@@ -127,7 +127,7 @@ export default async function Home() {
                 Join ClearMargin
               </h2>
               <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                Get new posts delivered when they're worth reading. No spam, no gimmicks. Just clear thinking on work, growth, and leadership from people who've spent time in the real world.
+                Get new posts delivered when they&apos;re worth reading. No spam, no gimmicks. Just clear thinking on work, growth, and leadership from people who&apos;ve spent time in the real world.
               </p>
               <Link
                 href="/register"
