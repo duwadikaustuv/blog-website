@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { checkIsAdmin } from "@/lib/authHelpers";
 import { Article } from "@/types";
 
 // GET - List all articles (public: published only, admin: all)
@@ -116,10 +117,4 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function checkIsAdmin(email: string): Promise<boolean> {
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { role: true },
-  });
-  return user?.role === "admin";
-}
+// checkIsAdmin is imported from @/lib/authHelpers

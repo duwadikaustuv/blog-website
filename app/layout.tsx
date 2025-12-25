@@ -10,14 +10,37 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const siteUrl = process.env.NEXTAUTH_URL || "https://clearmargin.vercel.app";
+
 export const metadata: Metadata = {
-  title: "ClearMargin - Thoughtful Writing for People Who Build Things",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "ClearMargin - Thoughtful Writing for People Who Build Things",
+    template: "%s | ClearMargin",
+  },
   description: "Essays and short reads on leadership, personal growth, and doing better work without the noise.",
-  keywords: ["blog", "leadership", "personal growth", "work", "clear thinking"],
+  keywords: ["blog", "leadership", "personal growth", "work", "clear thinking", "essays", "productivity"],
   authors: [{ name: "ClearMargin" }],
+  creator: "ClearMargin",
+  publisher: "ClearMargin",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     title: "ClearMargin - Thoughtful Writing for People Who Build Things",
     description: "Essays and short reads on leadership, personal growth, and doing better work without the noise.",
+    url: siteUrl,
+    siteName: "ClearMargin",
+    images: [
+      {
+        url: "/logo.png",
+        width: 512,
+        height: 512,
+        alt: "ClearMargin Logo",
+      },
+    ],
     type: "website",
     locale: "en_US",
   },
@@ -25,6 +48,18 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ClearMargin - Thoughtful Writing for People Who Build Things",
     description: "Essays and short reads on leadership, personal growth, and doing better work without the noise.",
+    images: ["/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 

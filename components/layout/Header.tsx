@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
@@ -14,8 +15,15 @@ export default function Header() {
     <header className="border-b border-gray-300 dark:border-gray-700 bg-white dark:bg-black">
       <nav className="mx-auto max-w-7xl px-6 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-xl font-semibold tracking-tight text-black dark:text-white">
-            ClearMargin
+          <Link href="/" className="flex items-center gap-2 text-xl font-semibold tracking-tight text-black dark:text-white">
+            <Image 
+              src="/logo.png" 
+              alt="ClearMargin Logo" 
+              width={32} 
+              height={32}
+              className="rounded"
+            />
+            <span>ClearMargin</span>
           </Link>
 
           {/* Desktop Navigation */}
